@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_image_processing/camera_view.dart';
 import 'package:flutter_image_processing/flutter_image_processing.dart';
 
 void main() {
@@ -54,9 +55,35 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: HomePage(platformVersion: _platformVersion),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final String platformVersion;
+  const HomePage({Key? key, required this.platformVersion}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text('Running on: $platformVersion\n'),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute (
+                    builder: (BuildContext context) => const CameraApp(),
+                  ),
+                );
+              },
+              child: const Text('Start camera')
+          )
+        ],
       ),
     );
   }
