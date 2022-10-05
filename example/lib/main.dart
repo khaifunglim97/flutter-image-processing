@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_image_processing/camera_view.dart';
+import 'package:flutter_image_processing/camera/camera_view.dart';
 import 'package:flutter_image_processing/flutter_image_processing.dart';
 
 void main() {
@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute (
-                    builder: (BuildContext context) => const CameraApp(),
+                    builder: (BuildContext context) => const CameraView(),
                   ),
                 );
               },

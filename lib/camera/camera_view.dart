@@ -2,14 +2,16 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CameraApp extends StatefulWidget {
-  const CameraApp({Key? key}) : super(key: key);
+import 'camera_isolates.dart';
+
+class CameraView extends StatefulWidget {
+  const CameraView({Key? key}) : super(key: key);
 
   @override
-  State<CameraApp> createState() => _CameraAppState();
+  State<CameraView> createState() => _CameraViewState();
 }
 
-class _CameraAppState extends State<CameraApp> {
+class _CameraViewState extends State<CameraView> {
   CameraController? controller;
   List<CameraDescription>? _cameras;
 
@@ -23,8 +25,14 @@ class _CameraAppState extends State<CameraApp> {
     _cameras = await availableCameras();
   }
 
+  bool isBusy = false;
   Future _processCameraImage(CameraImage camImage) async {
+    if (isBusy) return;
 
+    isBusy = true;
+    await CameraIsolates.spawnAndConvertImage(camImage);
+
+    isBusy = false;
   }
 
   @override
@@ -76,8 +84,6 @@ class _CameraAppState extends State<CameraApp> {
       return Container();
     }
 
-    return MaterialApp(
-      home: CameraPreview(camController),
-    );
+    return CameraPreview(camController);
   }
 }
