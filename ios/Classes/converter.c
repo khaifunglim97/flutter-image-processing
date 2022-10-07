@@ -19,6 +19,7 @@ int getRotatedImageByteIndex(int x, int y, int rotatedImageWidth){
 
 // https://gist.github.com/Alby-o/fe87e35bc21d534c8220aed7df028e03
 // https://github.com/Hugand/camera_tutorial/
+// TODO: Only works for android in portrait up mode
 int ConvertAndroidCamImage2Bgra(
     AndroidCamImage const * srcAndroidCamImg
 ){

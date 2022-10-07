@@ -30,6 +30,19 @@ class CameraPainter extends CustomPainter {
         ),
         paint,
       );
+
+      for (final DartEyeCenter eyeCenter in face.eyes) {
+        canvas.drawCircle(
+            Offset(
+                CoordinatesTranslator.translateX(
+                    eyeCenter.x.toDouble(), size, absoluteImageSize),
+                CoordinatesTranslator.translateY(
+                    eyeCenter.y.toDouble(), size, absoluteImageSize)
+            ),
+            10,
+            paint
+        );
+      }
     }
   }
 

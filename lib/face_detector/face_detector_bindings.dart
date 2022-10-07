@@ -77,6 +77,9 @@ class FaceDetectorBindings {
       return DartFacesDetected.fromFacesDetected(facesDetected.ref);
     } finally {
       malloc.free(ptr);
+      for (int i=0; i < facesDetected.ref.count; i++) {
+        malloc.free(facesDetected.ref.faces[i].eyes);
+      }
       malloc.free(facesDetected.ref.faces);
       malloc.free(facesDetected);
     }

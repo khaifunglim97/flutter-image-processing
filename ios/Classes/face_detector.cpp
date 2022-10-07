@@ -4,7 +4,6 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
-#include <android/log.h>
 
 // TODO: remove global variables and introduce proper memory management
 cv::CascadeClassifier face_cascade;
@@ -52,15 +51,18 @@ int DetectAndDisplay(
     outFacesDetected->count = faces.size();
     for ( size_t i = 0; i < faces.size(); i++ )
     {
-        facesDetected[i] = (FaceRect) { faces[i].x, faces[i].y, faces[i].height, faces[i].width };
         cv::Mat faceROI = frame_gray( faces[i] );
         //-- In each face, detect eyes
         std::vector<cv::Rect> eyes;
         eyes_cascade.detectMultiScale( faceROI, eyes );
+        EyeCenter* eyesDetected = (EyeCenter*) malloc(eyes.size() * sizeof(*eyesDetected));
         for ( size_t j = 0; j < eyes.size(); j++ )
         {
-            cv::Point eye_center( faces[i].x + eyes[j].x + eyes[j].width/2, faces[i].y + eyes[j].y + eyes[j].height/2 );
+            eyesDetected[j] = (EyeCenter) { faces[i].x + eyes[j].x + eyes[j].width/2, faces[i].y + eyes[j].y + eyes[j].height/2 };
         }
+        facesDetected[i] = (FaceRect) { faces[i].x, faces[i].y, faces[i].height, faces[i].width };
+        facesDetected[i].eyes = eyesDetected;
+        facesDetected[i].eyesCount = eyes.size();
     }
     outFacesDetected->faces = facesDetected;
     return 0;

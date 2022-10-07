@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
@@ -56,8 +57,10 @@ class _CameraProcessorState extends State<CameraProcessor> {
     Uint8List? rgbaBytes = resConvert[CameraIsolates.keyConvertResult];
 
     if (_modelsLoaded && rgbaBytes != null) {
+      int height = Platform.isAndroid ? camImage.width : camImage.height;
+      int width = Platform.isAndroid ? camImage.height : camImage.width;
       final resDetect = await FaceDetectorIsolates
-          .spawnAndDetect(rgbaBytes, camImage.width, camImage.height);
+          .spawnAndDetect(rgbaBytes, height, width);
       DartFacesDetected? detected = resDetect[FaceDetectorIsolates.keyDetect];
       if (detected != null && detected.count > 0) {
         if (!mounted) return;
@@ -66,7 +69,7 @@ class _CameraProcessorState extends State<CameraProcessor> {
               size: Size.infinite,
               painter: CameraPainter(
                   detected,
-                  Size(camImage.height.toDouble(), camImage.width.toDouble())
+                  Size(width.toDouble(), height.toDouble())
               )
           );
         });
@@ -94,6 +97,10 @@ class _CameraProcessorState extends State<CameraProcessor> {
   Widget build(BuildContext context) {
     _processCameraImage(widget.image);
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
       backgroundColor: Colors.transparent,
       body: Stack(
         children: <Widget>[
