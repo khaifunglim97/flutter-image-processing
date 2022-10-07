@@ -100,6 +100,8 @@ add_library( flutter_image_processing
         # Provides a relative path to your source file(s).
         ../ios/Classes/converter.h
         ../ios/Classes/converter.c
+        ../ios/Classes/face_detector.h
+        ../ios/Classes/face_detector.cpp
         )
 
 target_link_libraries(
@@ -114,6 +116,7 @@ target_link_libraries(
 
         # https://pullrequest.opencv.org/buildbot/export/opencv_releases/master-contrib_pack-contrib-android/
         dnn
+        objdetect
         imgcodecs
         features2d
         calib3d

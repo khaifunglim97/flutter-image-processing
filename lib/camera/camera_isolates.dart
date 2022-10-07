@@ -1,3 +1,4 @@
+// https://github.com/dart-lang/samples/blob/master/isolates/bin/send_and_receive.dart
 import 'dart:isolate';
 import 'dart:typed_data';
 
@@ -6,10 +7,10 @@ import 'package:flutter/foundation.dart';
 
 import '../flutter_image_processing.dart';
 
+// TODO: isolates calling native might have memory leaks (must be tested)
 class CameraIsolates {
   static const keyConvertResult = "outBgra";
 
-  //TODO: might have memory leak problem
   static Future<Map<String, dynamic>> spawnAndConvertImage(CameraImage image) async {
     final p = ReceivePort();
     await Isolate.spawn(_convertCamImageToBgra, [

@@ -6,6 +6,7 @@ import 'package:flutter_image_processing/camera/camera_view.dart';
 import 'package:flutter_image_processing/flutter_image_processing.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

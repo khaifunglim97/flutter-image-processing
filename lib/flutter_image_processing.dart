@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 
 import 'camera/camera_bindings.dart';
+import 'face_detector/face_detector_bindings.dart';
 import 'flutter_image_processing_platform_interface.dart';
 
 final DynamicLibrary nativeFlutterImageProcessingLib = Platform.isAndroid
@@ -28,4 +29,5 @@ class FlutterImageProcessing {
   }
 
   static final cameraBindings = CameraBindings(nativeFlutterImageProcessingLib);
+  static final faceDetectorBindings = FaceDetectorBindings(nativeFlutterImageProcessingLib);
 }

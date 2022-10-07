@@ -1,8 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'camera_isolates.dart';
+import 'camera_processor.dart';
 
 class CameraView extends StatefulWidget {
   const CameraView({Key? key}) : super(key: key);
@@ -14,6 +13,7 @@ class CameraView extends StatefulWidget {
 class _CameraViewState extends State<CameraView> {
   CameraController? controller;
   List<CameraDescription>? _cameras;
+  CameraImage? cameraImage;
 
   void showInSnackBar(String message) {
     ScaffoldMessenger.of(context)
@@ -25,14 +25,11 @@ class _CameraViewState extends State<CameraView> {
     _cameras = await availableCameras();
   }
 
-  bool isBusy = false;
   Future _processCameraImage(CameraImage camImage) async {
-    if (isBusy) return;
-
-    isBusy = true;
-    await CameraIsolates.spawnAndConvertImage(camImage);
-
-    isBusy = false;
+    if (!mounted) return;
+    setState(() {
+      cameraImage = camImage;
+    });
   }
 
   @override
@@ -48,14 +45,14 @@ class _CameraViewState extends State<CameraView> {
             ResolutionPreset.high,
             enableAudio: false
         );
-        controller?.initialize().then((_) {
+        try {
+          await controller?.initialize();
+          controller?.startImageStream(_processCameraImage);
+          setState(() {});
+        } catch (e) {
           if (!mounted) {
             return;
           }
-          controller?.lockCaptureOrientation(DeviceOrientation.portraitUp);
-          controller?.startImageStream(_processCameraImage);
-          setState(() {});
-        }).catchError((Object e) {
           if (e is CameraException) {
             switch (e.code) {
               case 'CameraAccessDenied':
@@ -66,7 +63,7 @@ class _CameraViewState extends State<CameraView> {
                 break;
             }
           }
-        });
+        }
       }
     });
   }
@@ -80,10 +77,24 @@ class _CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
     final camController = controller;
-    if (camController == null || !camController.value.isInitialized) {
-      return Container();
+    final camImg = cameraImage;
+    if (camController == null
+        || !camController.value.isInitialized
+        || camImg == null) {
+      return Scaffold(
+          body: Container(
+            color: Colors.white,
+            child: const Center(child: CircularProgressIndicator(),),
+          )
+      );
     }
 
-    return CameraPreview(camController);
+    // TODO: find a fix for scaffold white space if body is CameraPreview
+    return CameraPreview(
+      camController,
+      child: CameraProcessor(
+        image: camImg,
+      ),
+    );
   }
 }
